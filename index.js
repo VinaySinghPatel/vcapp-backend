@@ -1,16 +1,20 @@
 import express from 'express';
 const app = express();
-const port = 3000;
 import connectToMongoDb from './db.js';
 import cors from 'cors';
 import {createServer} from "http";
 import {Server} from "socket.io";
 import { randomUUID } from 'crypto';
+import dotenv from 'dotenv';
+dotenv.config();
+
+
+const port = process.env.PORT || 3000;
 
 connectToMongoDb();
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
 }));
@@ -28,7 +32,7 @@ app.get('/', (req, res) => {
 const httpServer = createServer(app);
 const io = new Server(httpServer,{
     cors: {
-        origin: "http://localhost:5173",
+        origin: process.env.SOCKET_CORS_ORIGIN || "http://localhost:5173",
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true,
     },
